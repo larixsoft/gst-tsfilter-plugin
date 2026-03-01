@@ -1,0 +1,38 @@
+# Build directories
+build/
+*.o
+*.so
+*.a
+
+# Test files
+test-results/
+*.log
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Docker
+docker/
+.dockerignore
+Dockerfile
+
+# Documentation
+*.md
+!README.md
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# Other
+.DS_Store
+*~

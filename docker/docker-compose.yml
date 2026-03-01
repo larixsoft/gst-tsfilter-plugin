@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  gst-tsfilter:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: gst-tsfilter:latest
+    container_name: gst-tsfilter
+    volumes:
+      # Mount project directory for development
+      - ..:/src
+      # Mount test files directory (if you have tsduck-test)
+      - ../tsduck-test:/tsduck-test:ro
+    working_dir: /src
+    environment:
+      - GST_PLUGIN_PATH=/usr/local/lib/x86_64-linux-gnu/gstreamer-1.0
+      - TS_TEST_DIR=/tsduck-test/input
+    # Override default command to keep container running
+    command: /bin/bash
+    stdin_open: true
+    tty: true

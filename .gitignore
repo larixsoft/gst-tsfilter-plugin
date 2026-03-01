@@ -1,0 +1,14 @@
+# Build directories
+build
+builddir
+
+# IDE and editor files
+.claude
+.vscode
+*.obj
+
+# Output directories
+pid_dumps
+pid_dumps*
+pid_dumps_cpp
+pid_dumps_gst

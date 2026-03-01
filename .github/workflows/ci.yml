@@ -1,0 +1,129 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+jobs:
+  # Build and test using Docker
+  docker-ci:
+    name: Docker CI (Ubuntu 24.04)
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        run: |
+          cd docker
+          ./build.sh
+
+      - name: Build and run C test suite
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/src \
+            -e GST_PLUGIN_PATH=/src/build/tsfilter:/usr/local/lib/gstreamer-1.0 \
+            gst-tsfilter \
+            bash -c "cd /src && mkdir -p build && cd build && cmake .. && make && ./test/test_tsfilter_comprehensive"
+
+      - name: Run quick test (20 files)
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/src \
+            -e GST_PLUGIN_PATH=/src/build/tsfilter:/usr/local/lib/gstreamer-1.0 \
+            -e TS_TEST_DIR=/tsduck-test \
+            gst-tsfilter \
+            bash -c "cd /src && mkdir -p build && cd build && cmake .. && make && cd /src/test && ./test_20_files.sh"
+
+      - name: Run full test suite (281 files)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          docker run --rm \
+            -v ${{ github.workspace }}:/src \
+            -e GST_PLUGIN_PATH=/src/build/tsfilter:/usr/local/lib/gstreamer-1.0 \
+            -e TS_TEST_DIR=/tsduck-test \
+            gst-tsfilter \
+            bash -c "cd /src && mkdir -p build && cd build && cmake .. && make && cd /src/test && ./test_all_files.sh"
+
+  # Native build (Ubuntu latest)
+  native-build:
+    name: Native Build (Ubuntu Latest)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            cmake \
+            meson \
+            ninja-build \
+            pkg-config \
+            libgstreamer1.0-dev \
+            libgstreamer-plugins-base1.0-dev \
+            libgstreamer-plugins-bad1.0-dev \
+            gstreamer1.0-tools \
+            gstreamer1.0-plugins-base \
+            gstreamer1.0-plugins-good \
+            gstreamer1.0-plugins-bad
+
+      - name: Build with CMake
+        run: |
+          mkdir build && cd build
+          cmake ..
+          make -j$(nproc)
+
+      - name: Run C test suite
+        run: |
+          export GST_PLUGIN_PATH=$PWD/build/tsfilter
+          ./build/test/test_tsfilter_comprehensive
+
+      - name: Verify plugin loads
+        run: |
+          export GST_PLUGIN_PATH=$PWD/build/tsfilter
+          gst-inspect-1.0 tsfilter
+
+  # Build with Meson
+  meson-build:
+    name: Meson Build (Plugin Only)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            meson \
+            ninja-build \
+            pkg-config \
+            libgstreamer1.0-dev \
+            libgstreamer-plugins-base1.0-dev \
+            gstreamer1.0-tools \
+            gstreamer1.0-plugins-base \
+            gstreamer1.0-plugins-good
+
+      - name: Build with Meson
+        run: |
+          cd tsfilter
+          meson setup build
+          meson compile -C build
+
+      - name: Verify plugin
+        run: |
+          export GST_PLUGIN_PATH=$PWD/tsfilter/build
+          gst-inspect-1.0 tsfilter || true
