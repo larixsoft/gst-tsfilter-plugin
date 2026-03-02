@@ -1,6 +1,6 @@
-# Docker for gst-tsfilter
+# Docker for gst-tsfilter-plugin
 
-This directory contains Docker configuration for building and running the gst-tsfilter project in a containerized environment.
+This directory contains Docker configuration for building and running the gst-tsfilter-plugin project in a containerized environment.
 
 ## Quick Start
 

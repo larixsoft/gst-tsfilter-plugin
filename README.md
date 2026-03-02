@@ -1,7 +1,6 @@
 # TSFilter - GStreamer MPEG-TS PID Filter Plugin
 
-[![CI](https://github.com/larixsoft/gst-tsfilter/actions/workflows/ci.yml/badge.svg)](https://github.com/larixsoft/gst-tsfilter/actions/workflows/ci.yml)
-[![Docker](https://github.com/larixsoft/gst-tsfilter/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/larixsoft/gst-tsfilter/actions/workflows/docker-publish.yml)
+[![CI](https://github.com/larixsoft/gst-tsfilter-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/larixsoft/gst-tsfilter-plugin/actions/workflows/ci.yml)
 
 A GStreamer 1.0 element for filtering MPEG-TS (Transport Stream) packets by PID with advanced output options.
 
@@ -126,8 +125,8 @@ Builds the plugin, demo application, and test suite:
 
 ```bash
 # Clone repository
-git clone https://github.com/larixsoft/gst-tsfilter.git
-cd gst-tsfilter
+git clone https://github.com/larixsoft/gst-tsfilter-plugin.git
+cd gst-tsfilter-plugin
 
 # Build all components
 mkdir build && cd build
@@ -146,8 +145,8 @@ Builds only the GStreamer plugin:
 
 ```bash
 # Clone repository
-git clone https://github.com/larixsoft/gst-tsfilter.git
-cd gst-tsfilter/tsfilter
+git clone https://github.com/larixsoft/gst-tsfilter-plugin.git
+cd gst-tsfilter-plugin/tsfilter
 
 # Setup build
 meson setup build
@@ -164,8 +163,8 @@ Build and run in a Docker container with all dependencies (test files auto-clone
 
 ```bash
 # Clone repository
-git clone https://github.com/larixsoft/gst-tsfilter.git
-cd gst-tsfilter
+git clone https://github.com/larixsoft/gst-tsfilter-plugin.git
+cd gst-tsfilter-plugin
 
 # Using run script (recommended)
 cd docker
@@ -262,80 +261,6 @@ cd test
   ```bash
   TS_TEST_DIR=/path/to/tsduck-test/input ./test_all_files.sh
   ```
-
-## CI/CD
-
-The project uses GitHub Actions for continuous integration:
-
-- **[CI Workflow](.github/workflows/ci.yml)**: Runs on every push and PR
-  - Docker-based testing (Ubuntu 24.04)
-  - Native CMake build (Ubuntu latest)
-  - Meson build (plugin only)
-
-- **[Docker Publish](.github/workflows/docker-publish.yml)**: Builds and publishes Docker images
-  - Automatic builds on main branch
-  - Versioned releases for tags
-  - Published to `ghcr.io/larixsoft/gst-tsfilter`
-
-### Using CI Docker Images
-
-```bash
-# Pull the latest CI-built image
-docker pull ghcr.io/larixsoft/gst-tsfilter:latest
-
-# Run tests with CI image
-docker run --rm ghcr.io/larixsoft/gst-tsfilter \
-  /src/build/test/test_tsfilter_comprehensive
-```
-
-See [.github/workflows/README.md](.github/workflows/README.md) for more details.
-
-## Project Structure
-
-```
-gst-tsfilter/
-├── tsfilter/                        # GStreamer plugin (main component)
-│   ├── src/
-│   │   ├── tsfilter.c              # Main plugin code
-│   │   ├── tsfilter.h              # Header
-│   │   ├── tsfilter_crc.c          # CRC calculations
-│   │   ├── tsfilterplugin.c        # Plugin registration
-│   │   └── config.h                # Plugin configuration
-│   ├── CMakeLists.txt              # Plugin CMake config
-│   └── meson.build                 # Plugin Meson config
-├── app/                             # Demo application
-│   ├── CMakeLists.txt              # App build config
-│   └── main.cpp                     # ts_analyzer (example usage)
-├── test/                            # Test suite
-│   ├── CMakeLists.txt              # Test build config
-│   ├── README.md                    # Test documentation
-│   ├── test_all_files.sh           # Main test (281 files, 2 modes)
-│   ├── test_20_files.sh            # Quick test (20 files)
-│   ├── test_single.py              # Python test wrapper
-│   ├── run_all_tests.sh            # C test runner
-│   ├── analyze_ts_files.sh         # TS analysis wrapper
-│   ├── test_tsfilter_comprehensive.c  # C test suite
-│   └── ts_reporter.c               # TS analysis utility
-├── docker/                          # Docker configuration
-│   ├── Dockerfile                  # Container image definition
-│   ├── docker-compose.yml          # Docker Compose config
-│   ├── build.sh                    # Docker build script
-│   ├── run.sh                      # Docker run script (build, test, shell, etc.)
-│   └── README.md                   # Docker usage guide
-├── .github/                         # GitHub Actions CI/CD
-│   └── workflows/                  # CI workflow definitions
-│       ├── ci.yml                  # Main CI workflow
-│       ├── docker-publish.yml      # Docker image publishing
-│       └── README.md               # Workflow documentation
-├── build/                           # Build output (generated)
-│   ├── ts_analyzer                 # Demo binary
-│   └── test/                       # Test binaries
-│       ├── test_tsfilter_comprehensive
-│       └── ts_reporter
-├── CMakeLists.txt                   # Root CMake config
-├── .dockerignore                    # Docker build exclusions
-└── README.md                        # This file
-```
 
 ## GStreamer Pipeline Examples
 

@@ -1,6 +1,6 @@
 # Test Suite
 
-Test scripts and utilities for gst-tsfilter.
+Test scripts and utilities for gst-tsfilter-plugin.
 
 ## Quick Start with Docker
 

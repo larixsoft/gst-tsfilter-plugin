@@ -1,6 +1,6 @@
 # GitHub Actions Workflows
 
-This directory contains CI/CD workflows for the gst-tsfilter project.
+This directory contains CI/CD workflows for the gst-tsfilter-plugin project.
 
 ## Workflows
 
@@ -29,47 +29,24 @@ This directory contains CI/CD workflows for the gst-tsfilter project.
    - Builds only the plugin with Meson
    - Verifies plugin loads
 
-### Docker Image Workflow (`docker-publish.yml`)
+### Docker Build Workflow (`docker-publish.yml`)
 
 **Triggers:**
 - Push to `main` branch
 - Version tags (e.g., `v1.0.0`)
-- Pull requests (build only, no push)
+- Pull requests
 - Manual workflow dispatch
 
 **What it does:**
 - Builds Docker image using `docker/Dockerfile`
-- Publishes to GitHub Container Registry (ghcr.io)
-- Tags: `latest`, `vX.Y.Z`, `vX.Y`, `vX`
-
-## Using the Docker Image from CI
-
-### Pull the Image
-
-```bash
-docker pull ghcr.io/larixsoft/gst-tsfilter:latest
-```
-
-### Run Tests
-
-```bash
-docker run --rm ghcr.io/larixsoft/gst-tsfilter \
-  /src/build/test/test_tsfilter_comprehensive
-```
-
-### Interactive Shell
-
-```bash
-docker run -it --rm ghcr.io/larixsoft/gst-tsfilter bash
-```
+- Verifies image builds successfully (no push to registry)
 
 ## Status Badges
 
-Add these to your README.md:
+Add this to your README.md:
 
 ```markdown
-[![CI](https://github.com/larixsoft/gst-tsfilter/actions/workflows/ci.yml/badge.svg)](https://github.com/larixsoft/gst-tsfilter/actions/workflows/ci.yml)
-[![Docker](https://github.com/larixsoft/gst-tsfilter/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/larixsoft/gst-tsfilter/actions/workflows/docker-publish.yml)
+[![CI](https://github.com/larixsoft/gst-tsfilter-plugin/actions/workflows/ci.yml/badge.svg)](https://github.com/larixsoft/gst-tsfilter-plugin/actions/workflows/ci.yml)
 ```
 
 ## Local Testing of Workflows

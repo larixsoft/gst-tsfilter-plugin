@@ -23,43 +23,23 @@ FAILED=0
 PASSED=0
 
 # Test directory - can be overridden via TS_TEST_DIR environment variable
-TEST_DIR="${TS_TEST_DIR:-../tsduck-test/input}"
+# Default to /tsduck-test (root) to find all files recursively
+TEST_DIR="${TS_TEST_DIR:-/tsduck-test}"
 
-# Array of test file names (relative to TEST_DIR)
-FILE_NAMES=(
-    "test-103.ts"
-    "test-076.2.ts"
-    "test-083.ts"
-    "test-145.ts"
-    "test-003.ts"
-    "test-041.ts"
-    "test-182.5.ts"
-    "test-165.ts"
-    "test-032.2.ts"
-    "test-138.ts"
-    "test-101.ts"
-    "test-143.ts"
-    "test-198.ts"
-    "test-040.ts"
-    "test-043.pmtvct.ts"
-    "test-149.ts"
-    "test-186.2.ts"
-    "test-139.ts"
-    "test-091.ts"
-    "test-120.ts"
-)
+# Get first 20 TS files from test directory and subdirectories
+mapfile -t FILES < <(find "$TEST_DIR" -name "*.ts" -type f | sort | head -20)
 
 echo "=========================================="
-echo "Testing 20 TS files for packet loss"
+echo "Testing ${#FILES[@]} TS files for packet loss"
 echo "=========================================="
 echo ""
 
-for i in "${!FILE_NAMES[@]}"; do
-    filename="${FILE_NAMES[$i]}"
-    file="$TEST_DIR/$filename"
+for i in "${!FILES[@]}"; do
+    file="${FILES[$i]}"
     num=$((i + 1))
+    basename=$(basename "$file")
 
-    printf "[%2d/%2d] Testing %s...\n" "$num" "${#FILE_NAMES[@]}" "$filename"
+    printf "[%2d/%2d] Testing %s...\n" "$num" "${#FILES[@]}" "$basename"
 
     # Clean up previous output
     rm -rf /tmp/tsout_test
